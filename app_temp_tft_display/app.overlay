@@ -1,0 +1,62 @@
+/ {
+    chosen {
+        zephyr,display = &tft_display;
+    };
+
+    mipi_dbi {
+        compatible = "zephyr,mipi-dbi-spi";
+        spi-dev = <&spi1>;
+
+        dc-gpios = <&gpioa 9 GPIO_ACTIVE_HIGH>;
+
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        tft_display: st7735r@0 {
+            compatible = "sitronix,st7735r";
+            reg = <0>;
+            mipi-max-frequency = <20000000>;
+            mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
+
+            width = <80>;
+            height = <160>;
+            x-offset = <26>;
+            y-offset = <1>;
+
+            madctl = <0x00>;
+            colmod = <0x05>;
+
+            inversion-on;
+            rgb-is-inverted;
+
+            caset = [ 00 00 00 4f  ];
+            raset = [ 00 00 00 9f  ];
+            invctr = <07>;
+            pwctr1 = [ a2 02 84  ];
+            pwctr2 = [ c5  ];
+            pwctr3 = [ 0a 00  ];
+            pwctr4 = [ 8a 2a  ];
+            pwctr5 = [ 8a ee  ];
+            vmctr1 = <0x0e>;
+            frmctr1 = [ 01 2c 2d  ];
+            frmctr2 = [ 01 2c 2d  ];
+            frmctr3 = [ 01 2c 2d 01 2c 2d  ];
+            gamctrp1 = [ 02 1c 07 12 37 32 29 2d 29 25 2b 39 00 01 03 10  ];
+            gamctrn1 = [ 03 1d 07 06 2e 2c 29 2d 2e 2e 37 3f 00 00 02 10  ];
+        };
+    };
+};
+
+&spi1 {
+    status = "okay";
+    cs-gpios = <&gpiob 6 GPIO_ACTIVE_LOW>;
+};
+
+&i2c1 {
+    status = "okay";
+
+    tmp102: tmp102@48 {
+        compatible = "ti,tmp112";
+        reg = <0x48>;
+    };
+};
